@@ -1,12 +1,13 @@
 /**
- * 微信小程序带参数二维码生成
+ * 微信小程序带参数二维码批量生成
  */
 //-------------------------------------------------------------------------
 
-var tableID = 0;
 const appID = '';
 const secret = '';
 var token = 0;
+var tableID = 0;
+var path="pages/menu/index/index?id=8,rGy5eRKHZ54DwscTSB67tNguGZKA4kdp,";
 
 function getToken() {
 	var https = require('https');
@@ -28,7 +29,7 @@ function getQR(ID) {
 	var https = require("https"),
 		fs = require("fs"),
 		data = {
-			"path": "pages/menu/index/index?id=8,rGy5eRKHZ54DwscTSB67tNguGZKA4kdp," + ID,
+			"path": path + ID,
 			"width": 430
 		};
 	data = JSON.stringify(data);
