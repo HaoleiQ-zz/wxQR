@@ -5,9 +5,10 @@
 
 const appID = '';
 const secret = '';
-var token = 0;
+var path="pages/menu/index/index?id=9,PgBsGCFMxfEf3wWQ9Y3NrmKETC7EyWse,";
+var tableNumber=50;
+var appToken = 0;
 var tableID = 0;
-var path="pages/menu/index/index?id=8,rGy5eRKHZ54DwscTSB67tNguGZKA4kdp,";
 
 function getToken() {
 	var https = require('https');
@@ -17,7 +18,7 @@ function getToken() {
 			res.on('data', (d) => {
 				//				process.stdout.write(d);
 				var results = JSON.parse(d.toString());
-				token = results.access_token;
+				appToken = results.access_token;
 				getQR(tableID);
 			});
 		}).on('error', function(e) {
@@ -37,7 +38,7 @@ function getQR(ID) {
 	var options = {
 		method: "POST",
 		host: "api.weixin.qq.com",
-		path: '/cgi-bin/wxaapp/createwxaqrcode?access_token=' + token + '&appid=' + appID + '&secret=' + secret,
+		path: '/cgi-bin/wxaapp/createwxaqrcode?access_token=' + appToken + '&appid=' + appID + '&secret=' + secret,
 		//记得更换token token有效时间2h
 		headers: {
 			"Content-Type": "application/json",
@@ -53,9 +54,9 @@ function getQR(ID) {
 		res.on("end", function() {
 			fs.writeFile("./res/QR/" + ID + '.png', imgData, "binary", function(err) {
 				if(err) {
-					console.log("down fail");
+					console.log("down fail",err);
 				}
-				if(tableID <= 11) {
+				if(tableID <= tableNumber) {
 					tableID = tableID + 1;
 					getQR(tableID);
 					console.log("down success",ID);
