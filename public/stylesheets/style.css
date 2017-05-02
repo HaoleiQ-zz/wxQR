@@ -1,0 +1,23 @@
+body {
+  padding: 30px;
+  font: "Lucida Grande", Helvetica, Arial, sans-serif;
+  text-align: center;
+}
+
+a {
+  color: #00B7FF;
+}
+.memInput{
+	height: 42px;
+	width: 50%;
+	padding: 3px;
+	text-align: center;
+}
+
+.formBox{
+	margin: 10px;
+}
+
+.formInputSpan{
+	margin: 7px;
+}
