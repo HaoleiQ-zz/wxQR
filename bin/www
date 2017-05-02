@@ -6,30 +6,17 @@ var app = require('../app');
 var debug = require('debug')('study:server');
 var http = require('http');
 
-/**
- * Get port from environment and store in Express.
- */
-
-var port = normalizePort(process.env.PORT || '80');
-app.set('port', port);
-
-/**
- * Create HTTP server.
- */
-
-var server = http.createServer(app);
-
-
-const appID = '';
-const secret = '';
-var appToken = 0;
-var path="pages/menu/index/index?id=10,RaPr5nyI8McId4Um2uQ7AQbTa9Z8TRit,";
-var tableNumber=100;//一共多少张桌
-var tableID = 1;//从几号桌开始
+var memID = 0,
+	appID = '',
+	appSecret = '',
+	appToken = 0,
+	wxPath = 'pages/menu/index/index?id=',
+	tableNumber = 100, //一共多少张桌
+	tableID = 1; //从几号桌开始
 
 function getToken() {
 	var https = require('https');
-	https.get('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxc5bd60572f88d253&secret=dbb9df1314f6155a2154de9e980ae63d',
+	https.get('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' + appID + '&secret=' + appSecret,
 		function(res) {
 			console.log("status: ", res.statusCode);
 			res.on('data', (d) => {
@@ -47,7 +34,7 @@ function getQR(ID) {
 	var https = require("https"),
 		fs = require("fs"),
 		data = {
-			"path": path + ID,
+			"path": wxPath + memID + ',' + memKey + ',' + ID,
 			"width": 430
 		};
 	data = JSON.stringify(data);
@@ -71,12 +58,12 @@ function getQR(ID) {
 		res.on("end", function() {
 			fs.writeFile("./res/QR/" + ID + '.png', imgData, "binary", function(err) {
 				if(err) {
-					console.log("down fail",err);
+					console.log("down fail", err);
 				}
 				if(tableID <= tableNumber) {
 					tableID = tableID + 1;
 					getQR(tableID);
-					console.log("down success",ID);
+					console.log("down success", ID);
 				}
 			});
 		});
@@ -84,67 +71,5 @@ function getQR(ID) {
 	req.write(data);
 	req.end();
 };
- 
-function normalizePort(val) {
-  var port = parseInt(val, 10);
-
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
-
-  if (port >= 0) {
-    // port number
-    return port;
-  }
-
-  return false;
-}
-
-/**
- * Event listener for HTTP server "error" event.
- */
-
-function onError(error) {
-  if (error.syscall !== 'listen') {
-    throw error;
-  }
-
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
-
-  // handle specific listen errors with friendly messages
-  switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
-      process.exit(1);
-      break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
-      process.exit(1);
-      break;
-    default:
-      throw error;
-  }
-}
-
-/**
- * Event listener for HTTP server "listening" event.
- */
-
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
-}
-
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+getToken();  
+//http.createServer(app).listen(80);
