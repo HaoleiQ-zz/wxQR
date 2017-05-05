@@ -6,7 +6,8 @@ var app = require('../app');
 var debug = require('debug')('study:server');
 var http = require('http');
 
-var memID = 0,
+var memID = 11,
+	memKey = 'hYUnnaQ9JDj92IbiN73RQMAUCSKzPSWP',
 	appID = '',
 	appSecret = '',
 	appToken = 0,
@@ -42,7 +43,7 @@ function getQR(ID) {
 	var options = {
 		method: "POST",
 		host: "api.weixin.qq.com",
-		path: '/cgi-bin/wxaapp/createwxaqrcode?access_token=' + appToken + '&appid=' + appID + '&secret=' + secret,
+		path: '/cgi-bin/wxaapp/createwxaqrcode?access_token=' + appToken + '&appid=' + appID + '&secret=' + appSecret,
 		//记得更换token token有效时间2h
 		headers: {
 			"Content-Type": "application/json",
@@ -56,7 +57,7 @@ function getQR(ID) {
 			imgData += chunk;
 		});
 		res.on("end", function() {
-			fs.writeFile("./res/QR/" + ID + '.png', imgData, "binary", function(err) {
+			fs.writeFile("./res/QrImages/" + ID + '.png', imgData, "binary", function(err) {
 				if(err) {
 					console.log("down fail", err);
 				}
@@ -71,5 +72,5 @@ function getQR(ID) {
 	req.write(data);
 	req.end();
 };
-getToken();  
+getToken();
 //http.createServer(app).listen(80);
